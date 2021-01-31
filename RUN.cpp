@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int M = 3;
+const int M = 2;
 
 int main()
 {
@@ -23,26 +23,32 @@ int main()
 	  return EXIT_SUCCESS;
 	}*/
 
-	templet::everest_engine teng("fsih61ho6nm85f51xo1xyx8tj4ws9e8wvddr4pe8eyp72xomf1mgwut04apf1nr8");
+	templet::everest_engine teng("token");
 
 	if (!teng) {
 		std::cout << "...task engine not connected..." << std::endl;
 		return EXIT_FAILURE;
 	}
 
+	string files[M];
 	templet::everest_task odls1[M];
 	templet::everest_task odls2[M][M];
 	
 	json in;
 	
-	//auto start = chrono::high_resolution_clock::now();
+	auto start = chrono::high_resolution_clock::now();
 
 	for (int i = 0; i < M; i++) {
 		odls1[i].app_id("5ff9d4041100001000ae2c37");
 		odls1[i].engine(teng);
 		
+		char name_buf[10];
+		sprintf_s(name_buf, "nls%.2d.txt", i);
+		string file(name_buf);
+		bool res = teng.upload(file, files[i]);
+
 		in["name"] = string("odls1-")+to_string(i);
-		in["inputs"]["m"] = i;
+		in["inputs"]["file1"] = files[i];
 
 		odls1[i].submit(in);
 	}
@@ -51,14 +57,23 @@ int main()
 		odls2[i][j].app_id("5ff9d4801100003100ae2c3a");
 		odls2[i][j].engine(teng);
 
+		char name_buf[10];
+		
+		sprintf_s(name_buf, "nls%.2d.txt", i);
+		string file1(name_buf);
+		bool res = teng.upload(file1, files[i]);
+
+		sprintf_s(name_buf, "nls%.2d.txt", j);
+		string file2(name_buf);
+		res = teng.upload(file2, files[j]);
+
 		in["name"] = string("odls2-") + to_string(i) + string("-") + to_string(j);
-		in["inputs"]["m1"] = i;
-		in["inputs"]["m2"] = j;
+		in["inputs"]["file1"] = files[i];
+		in["inputs"]["file2"] = files[j];
 
 		odls2[i][j].submit(in);
 	}
-
-	auto start = chrono::high_resolution_clock::now();
+	
 	teng.run();
 	auto stop  = chrono::high_resolution_clock::now();
 
