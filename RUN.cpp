@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int M = 2;
+const int M = 3;
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
 	  return EXIT_SUCCESS;
 	}*/
 
-	templet::everest_engine teng("token");
+	templet::everest_engine teng("wjnuzt4bemnrktizaz7pzq5ip2btyry9ye8h4kszrjnujvwdql5uqlwgxjt94zow");
 
 	if (!teng) {
 		std::cout << "...task engine not connected..." << std::endl;
@@ -51,21 +51,12 @@ int main()
 		in["inputs"]["file1"] = files[i];
 
 		odls1[i].submit(in);
+		odls1[i].attach(files[i], files[i]);
 	}
 
 	for (int i = 0; i < M; i++) for (int j = i + 1; j < M; j++) {
 		odls2[i][j].app_id("5ff9d4801100003100ae2c3a");
 		odls2[i][j].engine(teng);
-
-		char name_buf[10];
-		
-		sprintf_s(name_buf, "nls%.2d.txt", i);
-		string file1(name_buf);
-		bool res = teng.upload(file1, files[i]);
-
-		sprintf_s(name_buf, "nls%.2d.txt", j);
-		string file2(name_buf);
-		res = teng.upload(file2, files[j]);
 
 		in["name"] = string("odls2-") + to_string(i) + string("-") + to_string(j);
 		in["inputs"]["file1"] = files[i];
