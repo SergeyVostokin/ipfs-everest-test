@@ -386,11 +386,14 @@ namespace templet {
 	{
 		if (e != 0) {
 			e->_type = &_error_type;
-			e->_code = _code;
-			e->_response = _response;
-			e->_task = _error_task;
-			e->_task_input = (_error_task->_input).dump();
+			if (_error_type != everest_error::NOT_ERROR) {
+				e->_code = _code;
+				e->_response = _response;
+				e->_task = _error_task;
+				e->_task_input = (_error_task->_input).dump();
+			}
 		}
+
 		return _error_type != everest_error::NOT_ERROR;
 	}
 	
@@ -413,7 +416,12 @@ namespace templet {
 				std::cout << "error type : TASK_FAILED_OR_CANCELLED" << std::endl; 
 				break;
 			}
-			default: std::cout << "error type : illigal type value" << std::endl;;
+			case templet::everest_error::NOT_ERROR: {
+				std::cout << "error type : NOT_ERROR" << std::endl;
+				return;
+			}
+			default: std::cout << "error type : illigal type value" << std::endl;
+				return;
 		}
 		std::cout << "type ID : " << *e->_type << std::endl;
 		std::cout << "HTML response code : " << e->_code << std::endl;

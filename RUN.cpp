@@ -69,9 +69,9 @@ int main()
 	auto stop  = chrono::high_resolution_clock::now();
 
 	templet::everest_error cntxt;
-	if (teng.error(/*&cntxt*/)) {//	<--exeption is here(to be fixed)
+	if (teng.error(&cntxt)) {
 		std::cout << "...task engine error..." << std::endl;
-		//templet::everest_engine::print_error(&cntxt); <-- exeption is here (to be fixed)
+		templet::everest_engine::print_error(&cntxt);
 		return EXIT_FAILURE;
 	}
 
