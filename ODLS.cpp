@@ -1,8 +1,8 @@
-// ODLS.exe
-// вход: параметр командной строки, file1 [file2]
-//       file1 имя первого файла в разбиении множества нормализованных ЛК 7-ого порядка
-//       file2 имя второго файла в разбиении множества нормализованных ЛК 7-ого порядка (необязательный параметр)
-// выход: стандартный выходной поток, ортогональные нормализованные пары ДЛК 7-ого порядка (с первой строкой 00 11 22 33 44 55 66)  
+п»ї// ODLS.exe
+// РІС…РѕРґ: РїР°СЂР°РјРµС‚СЂ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё, file1 [file2]
+//       file1 РёРјСЏ РїРµСЂРІРѕРіРѕ С„Р°Р№Р»Р° РІ СЂР°Р·Р±РёРµРЅРёРё РјРЅРѕР¶РµСЃС‚РІР° РЅРѕСЂРјР°Р»РёР·РѕРІР°РЅРЅС‹С… Р›Рљ 7-РѕРіРѕ РїРѕСЂСЏРґРєР°
+//       file2 РёРјСЏ РІС‚РѕСЂРѕРіРѕ С„Р°Р№Р»Р° РІ СЂР°Р·Р±РёРµРЅРёРё РјРЅРѕР¶РµСЃС‚РІР° РЅРѕСЂРјР°Р»РёР·РѕРІР°РЅРЅС‹С… Р›Рљ 7-РѕРіРѕ РїРѕСЂСЏРґРєР° (РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ)
+// РІС‹С…РѕРґ: СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ РІС‹С…РѕРґРЅРѕР№ РїРѕС‚РѕРє, РѕСЂС‚РѕРіРѕРЅР°Р»СЊРЅС‹Рµ РЅРѕСЂРјР°Р»РёР·РѕРІР°РЅРЅС‹Рµ РїР°СЂС‹ Р”Р›Рљ 7-РѕРіРѕ РїРѕСЂСЏРґРєР° (СЃ РїРµСЂРІРѕР№ СЃС‚СЂРѕРєРѕР№ 00 11 22 33 44 55 66)  
 
 
 #include <string>
@@ -37,13 +37,13 @@ int main(int argc, char*argv[])
 		for (int m1 = 0; m1 < M1; m1++) 
 		for (int m2 = 0; m2 < M2; m2++)
 				if (is_ortogonal_pair(ndls1[m1], ndls2[m2])) {
-					cerr << ++counter << endl << endl;	print_pair(ndls1[m1], ndls2[m2]);
-					cerr << ++counter << endl << endl;  print_pair(ndls2[m2], ndls1[m1]);
+					cout << ++counter << endl << endl;	print_pair(ndls1[m1], ndls2[m2]);
+					cout << ++counter << endl << endl;  print_pair(ndls2[m2], ndls1[m1]);
 				}
 
 		auto end = chrono::system_clock::now();
 		chrono::duration<double> duration = (end - start);
-		cerr << "Completed in " << duration.count() << " seconds" << endl;
+		cout << "Completed in "; cerr << duration.count(); cout << " seconds" << endl;
 		return EXIT_SUCCESS;
 
 	}
@@ -55,17 +55,17 @@ int main(int argc, char*argv[])
 		for (int m1 = 0; m1 < M1; m1++)
 			for (int m2 = m1 + 1; m2 < M1; m2++)
 				if (is_ortogonal_pair(ndls1[m1], ndls1[m2])) {
-					cerr << ++counter << endl << endl;	print_pair(ndls1[m1], ndls1[m2]);
-					cerr << ++counter << endl << endl;  print_pair(ndls1[m2], ndls1[m1]);
+					cout << ++counter << endl << endl;	print_pair(ndls1[m1], ndls1[m2]);
+					cout << ++counter << endl << endl;  print_pair(ndls1[m2], ndls1[m1]);
 				}
 
 		auto end = chrono::system_clock::now();
 		chrono::duration<double> duration = (end - start);
-		cerr << "Completed in " << duration.count() << " seconds" << endl;
+		cout << "Completed in "; cerr << duration.count(); cout << " seconds" << endl;
 		return EXIT_SUCCESS;
 	}
 
-	cerr << "Bad parameter: required <file1> [<file2>]";
+	cout << "Bad parameter: required <file1> [<file2>]";
 	return EXIT_FAILURE;
 }
 
@@ -100,7 +100,7 @@ void print_pair(unsigned f[DDIM], unsigned s[DDIM])
 bool load_file(char* s_file, unsigned ndls[NDLS][DDIM], int &M)
 {
 	ifstream file(s_file);
-	cerr << "loading file " << s_file << endl;
+	cout << "loading file " << s_file << endl;
 
 	if (file) {
 		int k;
@@ -112,11 +112,11 @@ bool load_file(char* s_file, unsigned ndls[NDLS][DDIM], int &M)
 				else {
 					if (i == 0 && j == 0) {
 						M = k;
-						cerr << "file " << s_file << " loaded" << endl;
+						cout << "file " << s_file << " loaded" << endl;
 						return true;
 					}
 					else {
-						cerr << "Error!!! Bad file";
+						cout << "Error!!! Bad file";
 						return false;
 					}
 				}
@@ -124,7 +124,7 @@ bool load_file(char* s_file, unsigned ndls[NDLS][DDIM], int &M)
 		}
 	}
 	else {
-		cerr << "Error!!! Cannot open file";
+		cout << "Error!!! Cannot open file";
 		return false;
 	}
 	return true;

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int M = 9;
+const int M = 2;
 
 int main()
 {
@@ -40,23 +40,22 @@ int main()
 	auto start = chrono::high_resolution_clock::now();
 
 	for (int i = 0; i < M; i++) {
-		odls1[i].app_id("662aae561200001400e604bb");
+		odls1[i].app_id("5ff9d4041100001000ae2c37");
 		odls1[i].engine(teng);
 		
 		char name_buf[10];
 		sprintf(name_buf, "nls%.2d.txt", i);
 		string file(name_buf);
-		bool res = teng.upload(file, files[i]);
+		files[i] = string("\\\\\\\\mscs-fs\\data\\312_user_data\\everest\\split-10\\")+file;
 
 		in["name"] = string("odls1-")+to_string(i);
 		in["inputs"]["file1"] = files[i];
 
 		odls1[i].submit(in);
-		odls1[i].attach(files[i], files[i]);
 	}
 
 	for (int i = 0; i < M; i++) for (int j = i + 1; j < M; j++) {
-		odls2[i][j].app_id("662ab03a1200000f00e604bd");
+		odls2[i][j].app_id("5ff9d4801100003100ae2c3a");
 		odls2[i][j].engine(teng);
 
 		in["name"] = string("odls2-") + to_string(i) + string("-") + to_string(j);
@@ -69,14 +68,7 @@ int main()
 	teng.run();
 	auto stop  = chrono::high_resolution_clock::now();
 
-	templet::everest_error cntxt;
-	if (teng.error(&cntxt)) {
-		std::cout << "...task engine error..." << std::endl;
-		templet::everest_engine::print_error(&cntxt);
-		return EXIT_FAILURE;
-	}
-
-    double Ts = 0.0;
+	 double Ts = 0.0;
 
     for (int i = 0; i < M; i++) {
         json out = odls1[i].result();
@@ -98,7 +90,6 @@ int main()
 	cout << "Parallel   time is " << Tp << " seconds" << endl;
     cout << "Sequential time is " << Ts <<" seconds" << endl;
     cout << "Speedup is " << Ts/Tp << endl;
-    
 
 	return EXIT_SUCCESS;
 }
