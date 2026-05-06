@@ -1,4 +1,4 @@
-﻿// ODLS.exe
+// ODLS.exe
 // вход: параметр командной строки, file1 [file2]
 //       file1 имя первого файла в разбиении множества нормализованных ЛК 7-ого порядка
 //       file2 имя второго файла в разбиении множества нормализованных ЛК 7-ого порядка (необязательный параметр)
@@ -9,6 +9,7 @@
 #include <iostream>
 #include <chrono>
 #include <fstream>
+#include <set>
 
 using namespace std;
 
@@ -26,17 +27,38 @@ bool is_ortogonal_pair(unsigned i[DDIM], unsigned j[DDIM]);
 void print_pair(unsigned f[DDIM], unsigned s[DDIM]);
 bool load_file(char* s_file, unsigned ndls[NDLS][DDIM], int &M);
 
+struct sq7x7 {
+	unsigned sq[DDIM];
+	bool operator<(const sq7x7&arg)const {
+		for (int i = 0; i < DDIM; i++) {
+			if (sq[i] < arg.sq[i]) return true;
+			else if (sq[i] == arg.sq[i]) continue;
+			else return false;
+		}
+		return false;
+	}
+};
+
+std::set<sq7x7> orto_mates;
+
+void add_to_orto_mates(unsigned ndls[DDIM]) {
+	sq7x7 sq;
+	memcpy(sq.sq, ndls, sizeof(unsigned[DDIM]));
+	orto_mates.insert(sq);
+}
+
 int main(int argc, char*argv[])
 {
 	if (argc == 3) {
 
 		auto start = chrono::system_clock::now();
-		
+
 		if (!load_file(argv[1], ndls1, M1) || !load_file(argv[2], ndls2, M2)) return EXIT_FAILURE;
 
-		for (int m1 = 0; m1 < M1; m1++) 
-		for (int m2 = 0; m2 < M2; m2++)
+		for (int m1 = 0; m1 < M1; m1++)
+			for (int m2 = 0; m2 < M2; m2++)
 				if (is_ortogonal_pair(ndls1[m1], ndls2[m2])) {
+					add_to_orto_mates(ndls1[m1]); add_to_orto_mates(ndls1[m2]);
 					cout << ++counter << endl << endl;	print_pair(ndls1[m1], ndls2[m2]);
 					cout << ++counter << endl << endl;  print_pair(ndls2[m2], ndls1[m1]);
 				}
@@ -44,6 +66,7 @@ int main(int argc, char*argv[])
 		auto end = chrono::system_clock::now();
 		chrono::duration<double> duration = (end - start);
 		cout << "Completed in "; cerr << duration.count(); cout << " seconds" << endl;
+		cout << "Number of DLS with mates is " << orto_mates.size() << endl;
 		return EXIT_SUCCESS;
 
 	}
@@ -55,6 +78,7 @@ int main(int argc, char*argv[])
 		for (int m1 = 0; m1 < M1; m1++)
 			for (int m2 = m1 + 1; m2 < M1; m2++)
 				if (is_ortogonal_pair(ndls1[m1], ndls1[m2])) {
+					add_to_orto_mates(ndls1[m1]); add_to_orto_mates(ndls1[m2]);
 					cout << ++counter << endl << endl;	print_pair(ndls1[m1], ndls1[m2]);
 					cout << ++counter << endl << endl;  print_pair(ndls1[m2], ndls1[m1]);
 				}
@@ -62,6 +86,7 @@ int main(int argc, char*argv[])
 		auto end = chrono::system_clock::now();
 		chrono::duration<double> duration = (end - start);
 		cout << "Completed in "; cerr << duration.count(); cout << " seconds" << endl;
+		cout << "Number of DLS with mates is " << orto_mates.size() << endl;
 		return EXIT_SUCCESS;
 	}
 
