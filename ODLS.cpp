@@ -58,7 +58,7 @@ int main(int argc, char*argv[])
 		for (int m1 = 0; m1 < M1; m1++)
 			for (int m2 = 0; m2 < M2; m2++)
 				if (is_ortogonal_pair(ndls1[m1], ndls2[m2])) {
-					add_to_orto_mates(ndls1[m1]); add_to_orto_mates(ndls1[m2]);
+					add_to_orto_mates(ndls1[m1]); add_to_orto_mates(ndls2[m2]);
 					cout << ++counter << endl << endl;	print_pair(ndls1[m1], ndls2[m2]);
 					cout << ++counter << endl << endl;  print_pair(ndls2[m2], ndls1[m1]);
 				}
